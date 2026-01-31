@@ -3,25 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1a1a1a">
-    <title>Zach's Music Mainframe</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>ZB Mainframe</title>
     <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
+        .animate-spin {
+            animation: spin 1s linear infinite;
         }
-
         .connection-status {
             position: fixed;
             top: 10px;
@@ -33,234 +25,822 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
-
         .connection-status.online {
             background: rgba(34, 197, 94, 0.2);
             color: #22c55e;
             border: 1px solid #22c55e;
         }
-
         .connection-status.offline {
             background: rgba(239, 68, 68, 0.2);
             color: #ef4444;
             border: 1px solid #ef4444;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 40px 20px;
-        }
-
-        h1 {
-            font-size: 3em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-        }
-
-        .subtitle {
-            font-size: 1.2em;
-            color: #a0a0a0;
-            font-weight: 300;
-        }
-
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .app-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .app-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .app-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
-        }
-
-        .app-card:hover::before {
-            opacity: 1;
-        }
-
-        .app-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .app-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .app-description {
-            color: #a0a0a0;
-            font-size: 0.95em;
-            line-height: 1.5;
-            position: relative;
-        }
-
-        .quick-stats {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 40px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label {
-            color: #a0a0a0;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-
-        footer {
-            text-align: center;
-            color: #666;
-            padding: 20px;
-            font-size: 0.9em;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            .apps-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
-<body>
-    <div class="connection-status" id="connectionStatus">
+<body class="min-h-screen bg-white">
+    <div class="connection-status online" id="connectionStatus">
         <span id="statusText">Online</span>
     </div>
 
-    <div class="container">
-        <header>
-            <h1>🎵 MAINFRAME</h1>
-            <p class="subtitle">Command Center for Jazz-House World Domination</p>
-        </header>
-
-        <div class="quick-stats">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value">4</div>
-                    <div class="stat-label">Active Systems</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">∞</div>
-                    <div class="stat-label">Possibilities</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">24/7</div>
-                    <div class="stat-label">Access</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="apps-grid">
-            <a href="https://claude.ai/public/artifacts/d6cd9d99-badd-4b7a-9e37-f9ac20cea909" class="app-card">
-                <span class="app-icon">🎯</span>
-                <h2 class="app-title">Release Tracker</h2>
-                <p class="app-description">Manage releases, track streaming analytics, coordinate content schedules</p>
-            </a>
-
-            <a href="https://claude.ai/public/artifacts/2bb7b26e-26d8-465b-8b5f-44de5818e843" class="app-card">
-                <span class="app-icon">🤝</span>
-                <h2 class="app-title">Outreach Database</h2>
-                <p class="app-description">Build industry relationships, track connections, automate follow-ups</p>
-            </a>
-
-            <a href="https://claude.ai/public/artifacts/c7a227f5-151d-4e0a-ab27-342b1d7976cd" class="app-card">
-                <span class="app-icon">📱</span>
-                <h2 class="app-title">Content Hub</h2>
-                <p class="app-description">Coordinate multi-platform content, collaborate with team</p>
-            </a>
-
-            <a href="https://claude.ai/public/artifacts/YOUR_GOALS_DASHBOARD_ID" class="app-card">
-                <span class="app-icon">📊</span>
-                <h2 class="app-title">Goals Dashboard</h2>
-                <p class="app-description">Track yearly targets, automate daily actions, measure progress</p>
-            </a>
-        </div>
-
-        <footer>
-            <p>Built with intention • Powered by automation • Offline-ready</p>
-        </footer>
-    </div>
+    <div id="app"></div>
 
     <script>
-        // Register service worker for offline capability
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // ZB MAINFRAME v2 - Vanilla JS Version
+        // ═══════════════════════════════════════════════════════════════════════════════
+
+        const STORAGE_PREFIX = 'zb-mainframe-v2';
+        const CATEGORIES = {
+            business: { icon: '📋', color: '#374151', days: ['Monday', 'Wednesday', 'Friday'] },
+            creative: { icon: '🎨', color: '#dc2626', days: ['Monday', 'Wednesday', 'Friday'] },
+            posting: { icon: '📤', color: '#991b1b', days: ['Friday'] },
+            quick: { icon: '⚡', color: '#6b7280', days: ['Tuesday', 'Thursday'] },
+            outreach: { icon: '📧', color: '#1f2937', days: ['Monday', 'Wednesday'] },
+        };
+
+        // State
+        let state = {
+            loading: true,
+            showSettings: false,
+            cycleData: [],
+            releasesData: [],
+            contentData: [],
+            tasks: {},
+            stats: { listeners: 0, instagram: 0, tiktok: 0, youtube: 0, income: 5400 },
+            editingStat: null,
+            statInput: '',
+            manualTasks: [],
+            newTaskInput: '',
+            appUrls: { releases: '', content: '', outreach: '' },
+            dailyTasks: [],
+            dragOver: false
+        };
+
+        // Icons as SVG strings
+        const icons = {
+            vinyl: (size = 40) => `<svg width="${size}" height="${size}" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="19" fill="#1f2937" stroke="#000" stroke-width="1"/>
+                <circle cx="20" cy="20" r="7" fill="#dc2626"/>
+                <circle cx="20" cy="20" r="2" fill="#1f2937"/>
+            </svg>`,
+            refresh: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>`,
+            settings: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`,
+            check: `<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>`,
+            x: `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`,
+            chevronRight: `<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`,
+            edit: `<svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>`,
+            music: `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>`,
+            instagram: `<svg class="w-4 h-4 text-pink-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+            youtube: `<svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+            tiktok: `<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>`,
+            target: `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+            zap: `<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`,
+            externalLink: `<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>`,
+            upload: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>`,
+            save: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>`,
+            calendar: `<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`,
+            grid: `<svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>`,
+            users: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>`,
+        };
+
+        // Storage functions
+        async function loadData() {
+            state.loading = true;
+            try {
+                const keys = ['cycle', 'releases', 'content', 'tasks', 'stats', 'manualTasks', 'appUrls', 'dailyTasks'];
+                for (const key of keys) {
+                    try {
+                        const data = await window.storage.get(`${STORAGE_PREFIX}-${key}`);
+                        if (data?.value) {
+                            const parsed = JSON.parse(data.value);
+                            if (key === 'cycle') state.cycleData = parsed;
+                            if (key === 'releases') state.releasesData = parsed;
+                            if (key === 'content') state.contentData = parsed;
+                            if (key === 'tasks') state.tasks = parsed;
+                            if (key === 'stats') state.stats = { listeners: 0, instagram: 0, tiktok: 0, youtube: 0, income: 5400, ...parsed };
+                            if (key === 'manualTasks') {
+                                const today = new Date().toDateString();
+                                if (parsed.date === today) state.manualTasks = parsed.tasks || [];
+                            }
+                            if (key === 'appUrls') state.appUrls = { releases: '', content: '', outreach: '', ...parsed };
+                            if (key === 'dailyTasks') {
+                                const today = new Date().toDateString();
+                                if (parsed.date === today) state.dailyTasks = parsed.tasks || [];
+                            }
+                        }
+                    } catch (e) {}
+                }
+            } catch (e) {
+                console.error('Load error:', e);
+            }
+            state.loading = false;
+            render();
+        }
+
+        async function save(key, data) {
+            try {
+                await window.storage.set(`${STORAGE_PREFIX}-${key}`, JSON.stringify(data));
+            } catch (e) {
+                console.error('Save error:', e);
+            }
+        }
+
+        // CSV Parsing
+        function parseCSV(text) {
+            const lines = text.split('\n').filter(l => l.trim());
+            if (!lines.length) return [];
+            
+            const delim = (lines[0].match(/\t/g) || []).length > (lines[0].match(/,/g) || []).length ? '\t' : ',';
+            
+            const parse = (line) => {
+                const result = [];
+                let current = '', inQuotes = false;
+                for (let i = 0; i < line.length; i++) {
+                    const c = line[i];
+                    if (c === '"') {
+                        if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+                        else inQuotes = !inQuotes;
+                    } else if (c === delim && !inQuotes) {
+                        result.push(current.trim());
+                        current = '';
+                    } else current += c;
+                }
+                result.push(current.trim());
+                return result;
+            };
+            
+            const headers = parse(lines[0]);
+            return lines.slice(1).map(line => {
+                const vals = parse(line);
+                const obj = {};
+                headers.forEach((h, i) => obj[h] = vals[i] || '');
+                return obj;
+            }).filter(o => Object.values(o).some(v => v));
+        }
+
+        // Date utilities
+        function getMonday() {
+            const d = new Date();
+            const day = d.getDay();
+            const diff = day === 0 ? -6 : 1 - day;
+            d.setDate(d.getDate() + diff);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
+        function parseDate(str) {
+            if (!str) return null;
+            const clean = str.toString().trim();
+            const rangePart = clean.split(/\s*[-–]\s*/)[0].trim();
+            const match = rangePart.match(/^(\d{1,2})[\/\.\-](\d{1,2})(?:[\/\.\-](\d{2,4}))?/);
+            if (match) {
+                let [, m, d, y] = match;
+                y = y ? (y.length === 2 ? 2000 + parseInt(y) : parseInt(y)) : new Date().getFullYear();
+                return new Date(y, parseInt(m) - 1, parseInt(d));
+            }
+            return null;
+        }
+
+        function isCurrentWeek(str) {
+            const d = parseDate(str);
+            if (!d) return false;
+            const monday = getMonday();
+            return d.getMonth() === monday.getMonth() && d.getDate() === monday.getDate();
+        }
+
+        // Task logic
+        function categorize(text) {
+            const t = text.toLowerCase();
+            if (/check|review|respond|reply|dm|like|comment|engage/.test(t)) return 'quick';
+            if (/submit|reach out|email|pitch|curator|playlist|groover|submithub/.test(t)) return 'outreach';
+            if (/create|film|record|shoot|edit|produce|write|design|mix|master/.test(t)) return 'creative';
+            if (/post|upload|share|publish|release|announce/.test(t)) return 'posting';
+            return 'business';
+        }
+
+        function getWeeklyTasks() {
+            if (!state.cycleData.length) return { weekTasks: [], phase: null, release: null };
+            
+            let currentRelease = '';
+            let phase = '';
+            let weekRow = null;
+            
+            for (const row of state.cycleData) {
+                const keys = Object.keys(row);
+                const first = (row[keys[0]] || '').trim();
+                
+                if (first.toLowerCase().includes('release') || (!/^\d/.test(first) && first && !first.toLowerCase().includes('date'))) {
+                    currentRelease = first;
+                    continue;
+                }
+                
+                if (!first || first.toLowerCase().includes('date')) continue;
+                
+                if (isCurrentWeek(first)) {
+                    weekRow = row;
+                    phase = (row.goal || row.Goal || row[keys[1]] || '').toLowerCase();
+                    break;
+                }
+            }
+            
+            if (!weekRow) return { weekTasks: [], phase: null, release: currentRelease };
+            
+            const sources = [
+                weekRow.tasks || weekRow.Tasks || '',
+                weekRow['tasks to do'] || weekRow['tasks to do   '] || '',
+            ].filter(Boolean);
+            
+            const taskList = [];
+            const dayCount = {};
+            
+            sources.forEach(src => {
+                src.split(',').map(s => s.trim()).filter(Boolean).forEach(text => {
+                    if (text.length < 3) return;
+                    
+                    const cat = categorize(text);
+                    const catInfo = CATEGORIES[cat];
+                    const id = `${currentRelease}-${text}`.replace(/\s+/g, '-').slice(0, 50);
+                    
+                    const assignedDay = catInfo.days.reduce((min, d) => {
+                        dayCount[d] = dayCount[d] || 0;
+                        return dayCount[d] < (dayCount[min] || 999) ? d : min;
+                    }, catInfo.days[0]);
+                    
+                    dayCount[assignedDay] = (dayCount[assignedDay] || 0) + 1;
+                    
+                    taskList.push({
+                        id,
+                        text,
+                        category: cat,
+                        day: assignedDay,
+                        release: currentRelease,
+                        phase,
+                        done: state.tasks[id] || false
+                    });
+                });
+            });
+            
+            return { weekTasks: taskList, phase, release: currentRelease };
+        }
+
+        function getContentTasks() {
+            if (!state.contentData.length) return [];
+            
+            const today = new Date();
+            const todayMonth = today.getMonth() + 1;
+            const todayDate = today.getDate();
+            const todayYear = today.getFullYear();
+            
+            const contentTasks = [];
+            
+            for (let i = 0; i < state.contentData.length; i++) {
+                const row = state.contentData[i];
+                const keys = Object.keys(row);
+                const firstCell = (row[keys[0]] || '').toLowerCase().trim();
+                
+                if (!firstCell.includes('week of') && !firstCell.includes('week')) continue;
+                
+                let todayColIndex = -1;
+                let todayColKey = null;
+                
+                for (let j = 1; j < keys.length; j++) {
+                    const colValue = (row[keys[j]] || '').toString().trim();
+                    const dateMatch = colValue.match(/^(\d{1,2})[\/\.\-](\d{1,2})[\/\.\-]?(\d{2,4})?$/);
+                    if (dateMatch) {
+                        const m = parseInt(dateMatch[1]);
+                        const d = parseInt(dateMatch[2]);
+                        let y = dateMatch[3] ? parseInt(dateMatch[3]) : todayYear;
+                        if (y < 100) y += 2000;
+                        
+                        if (m === todayMonth && d === todayDate && y === todayYear) {
+                            todayColIndex = j;
+                            todayColKey = keys[j];
+                            break;
+                        }
+                    }
+                }
+                
+                if (todayColIndex === -1) continue;
+                
+                for (let j = i + 1; j < state.contentData.length && j < i + 8; j++) {
+                    const contentRow = state.contentData[j];
+                    const contentKeys = Object.keys(contentRow);
+                    const accountCell = (contentRow[contentKeys[0]] || '').trim();
+                    
+                    if (accountCell.toLowerCase().includes('week of')) break;
+                    if (!accountCell) continue;
+                    
+                    const content = (contentRow[todayColKey] || '').trim();
+                    
+                    if (content && content.length > 1) {
+                        const id = `content-${todayMonth}-${todayDate}-${accountCell}`.replace(/\s+/g, '-');
+                        contentTasks.push({
+                            id,
+                            account: accountCell,
+                            caption: content.length > 80 ? content.slice(0, 80) + '...' : content,
+                            fullCaption: content,
+                            done: state.tasks[id] || false
+                        });
+                    }
+                }
+                
+                if (contentTasks.length > 0) break;
+            }
+            
+            return contentTasks;
+        }
+
+        function getNextRelease() {
+            if (!state.releasesData.length) return null;
+            const now = new Date();
+            
+            for (const r of state.releasesData) {
+                const keys = Object.keys(r);
+                const dateStr = r[keys[0]] || r.Date || r.date;
+                const d = parseDate(dateStr);
+                if (d && d > now) {
+                    const daysUntil = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+                    return {
+                        title: r[keys[1]] || r.Title || r.title || 'Untitled',
+                        date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                        daysUntil
+                    };
+                }
+            }
+            return null;
+        }
+
+        async function toggleTask(taskId) {
+            state.tasks[taskId] = !state.tasks[taskId];
+            await save('tasks', state.tasks);
+            render();
+        }
+
+        async function toggleManualTask(taskId) {
+            state.manualTasks = state.manualTasks.map(t => t.id === taskId ? { ...t, done: !t.done } : t);
+            await save('manualTasks', { date: new Date().toDateString(), tasks: state.manualTasks });
+            render();
+        }
+
+        async function removeManualTask(taskId) {
+            state.manualTasks = state.manualTasks.filter(t => t.id !== taskId);
+            await save('manualTasks', { date: new Date().toDateString(), tasks: state.manualTasks });
+            render();
+        }
+
+        async function addManualTask() {
+            if (!state.newTaskInput.trim()) return;
+            const newTask = { id: `manual-${Date.now()}`, text: state.newTaskInput.trim(), done: false };
+            state.manualTasks.push(newTask);
+            state.newTaskInput = '';
+            await save('manualTasks', { date: new Date().toDateString(), tasks: state.manualTasks });
+            render();
+        }
+
+        async function updateStat(key, value) {
+            const val = parseInt(value);
+            if (isNaN(val) || val < 0) return;
+            state.stats[key] = val;
+            await save('stats', state.stats);
+            state.editingStat = null;
+            state.statInput = '';
+            render();
+        }
+
+        // File handlers
+        async function handleFileUpload(e, type) {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const text = await file.text();
+            const parsed = parseCSV(text);
+            
+            if (type === 'cycle') state.cycleData = parsed;
+            if (type === 'releases') state.releasesData = parsed;
+            if (type === 'content') state.contentData = parsed;
+            
+            await save(type, parsed);
+            e.target.value = '';
+            render();
+        }
+
+        // Render function
+        function render() {
+            const { weekTasks, phase, release } = getWeeklyTasks();
+            const contentTasks = getContentTasks();
+            const nextRelease = getNextRelease();
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const today = days[new Date().getDay()];
+            const todayTasks = weekTasks.filter(t => t.day === today);
+            const completedWeek = weekTasks.filter(t => t.done).length;
+            const listeners = state.stats?.listeners || 0;
+            const progress = listeners > 0 ? ((listeners / 100000) * 100).toFixed(1) : 0;
+            
+            const allDailyTasks = [
+                ...todayTasks.map(t => ({ ...t, done: state.tasks[t.id] || false })),
+                ...state.dailyTasks.filter(t => !todayTasks.find(tt => tt.id === t.id)).map(t => ({ ...t, done: state.tasks[t.id] || false }))
+            ];
+
+            const totalTasks = allDailyTasks.length + contentTasks.length;
+            const completedTasks = [...allDailyTasks, ...contentTasks].filter(t => t.done).length;
+
+            if (state.loading) {
+                document.getElementById('app').innerHTML = `
+                    <div class="min-h-screen bg-white flex items-center justify-center">
+                        <div class="w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('app').innerHTML = `
+                <!-- Header -->
+                <header class="border-b border-gray-200 bg-white sticky top-0 z-10">
+                    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            ${icons.vinyl(32)}
+                            <div>
+                                <h1 class="font-bold text-black text-lg">ZB Mainframe</h1>
+                                <p class="text-xs text-gray-500">${today} • ${progress}% to 100K</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="loadData()" class="p-2 hover:bg-gray-100 rounded-lg">
+                                ${icons.refresh}
+                            </button>
+                            <button onclick="state.showSettings = true; render();" class="p-2 hover:bg-gray-100 rounded-lg">
+                                ${icons.settings}
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+                    
+                    <!-- Release Hero -->
+                    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-50 via-gray-50 to-white border border-gray-200">
+                        <div class="relative p-5">
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-white text-gray-700 border border-gray-200 shadow-sm">
+                                            ${today}
+                                        </span>
+                                        ${phase ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold text-white shadow-sm bg-red-600">📋 ${phase}</span>` : ''}
+                                    </div>
+                                    
+                                    <h2 class="text-2xl sm:text-3xl font-bold mb-1 text-black">
+                                        ${totalTasks === 0 ? 'Ready to work' : 
+                                          completedTasks === totalTasks ? '✓ All done!' :
+                                          `${totalTasks - completedTasks} tasks left`}
+                                    </h2>
+                                    
+                                    ${release ? `<p class="text-gray-600 text-sm">Working on: <span class="text-black font-medium">${release}</span></p>` : ''}
+                                </div>
+                                
+                                ${nextRelease ? `
+                                    <div class="flex-shrink-0 bg-white rounded-xl p-3 border border-gray-200 shadow-sm min-w-[140px]">
+                                        <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Next Drop</p>
+                                        <p class="font-bold text-sm text-black truncate">${nextRelease.title}</p>
+                                        <p class="text-xs text-gray-500">${nextRelease.date}</p>
+                                        ${nextRelease.daysUntil <= 30 ? `
+                                            <span class="inline-block mt-1.5 px-2 py-0.5 rounded text-[10px] font-bold text-white ${
+                                                nextRelease.daysUntil <= 3 ? 'bg-red-600' :
+                                                nextRelease.daysUntil <= 7 ? 'bg-red-500' : 'bg-gray-600'
+                                            }">
+                                                ${nextRelease.daysUntil === 0 ? '🚀 TODAY' : `${nextRelease.daysUntil}d`}
+                                            </span>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <!-- TODAY'S TASKS -->
+                            <div class="mt-4 pt-4 border-t border-gray-200 min-h-[60px] rounded-lg" id="todayDropZone">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                    Today (${completedTasks}/${totalTasks})
+                                </p>
+                                
+                                <div class="space-y-2">
+                                    ${contentTasks.map(task => `
+                                        <div class="flex items-center gap-3 p-2 rounded-lg transition-all ${task.done ? 'bg-green-50' : 'bg-white border border-gray-200'}">
+                                            <button onclick="toggleTask('${task.id}')" class="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${task.done ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-red-400'}">
+                                                ${task.done ? icons.check : ''}
+                                            </button>
+                                            <span class="text-lg">📱</span>
+                                            <div class="flex-1 min-w-0">
+                                                <span class="text-sm ${task.done ? 'line-through text-gray-400' : 'text-black'}">${task.account}</span>
+                                                <p class="text-xs text-gray-400 truncate">${task.caption}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                    
+                                    ${allDailyTasks.map(task => {
+                                        const cat = CATEGORIES[task.category] || CATEGORIES.business;
+                                        return `
+                                            <div class="flex items-center gap-3 p-2 rounded-lg transition-all ${task.done ? 'bg-green-50' : 'bg-white border border-gray-200'}">
+                                                <button onclick="toggleTask('${task.id}')" class="w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${task.done ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-red-400'}">
+                                                    ${task.done ? icons.check : ''}
+                                                </button>
+                                                <span class="text-lg">${cat.icon}</span>
+                                                <span class="flex-1 text-sm ${task.done ? 'line-through text-gray-400' : 'text-black'}">${task.text}</span>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                    
+                                    ${totalTasks === 0 ? '<p class="text-xs text-gray-400 text-center py-2">Drag tasks from This Week below ↓</p>' : ''}
+                                </div>
+                            </div>
+                            
+                            <!-- THIS WEEK -->
+                            ${weekTasks.length > 0 ? `
+                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            This Week (${completedWeek}/${weekTasks.length})
+                                        </p>
+                                        ${state.appUrls.releases ? `
+                                            <a href="${state.appUrls.releases}" target="_blank" rel="noopener noreferrer"
+                                               class="text-xs text-red-600 hover:text-red-700 flex items-center gap-1">
+                                                View all ${icons.chevronRight}
+                                            </a>
+                                        ` : ''}
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        ${weekTasks.map(task => {
+                                            const cat = CATEGORIES[task.category];
+                                            const isToday = task.day === today;
+                                            const inDaily = state.dailyTasks.find(t => t.id === task.id);
+                                            return `
+                                                <button
+                                                    onclick="toggleTask('${task.id}')"
+                                                    class="text-xs px-2 py-1 rounded border transition-all cursor-pointer hover:scale-105 ${
+                                                        task.done 
+                                                            ? 'bg-green-50 border-green-200 text-green-700 line-through' 
+                                                            : inDaily
+                                                                ? 'bg-blue-50 border-blue-200 text-blue-700'
+                                                                : isToday
+                                                                    ? 'bg-red-50 border-red-200 text-red-700'
+                                                                    : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-gray-300'
+                                                    }"
+                                                    title="${task.day}: Click to complete"
+                                                >
+                                                    ${cat.icon} ${task.text.length > 25 ? task.text.slice(0, 25) + '...' : task.text}
+                                                </button>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            ` : !state.cycleData.length ? `
+                                <div class="mt-4 pt-4 border-t border-gray-200 text-center">
+                                    <p class="text-sm text-gray-500">Upload your 8-Week Release Cycle CSV to see tasks</p>
+                                    <button onclick="state.showSettings = true; render();" class="mt-2 text-xs text-red-600 hover:text-red-700">
+                                        Go to Settings →
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </section>
+
+                    <!-- Stats -->
+                    <section>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Stats Overview</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                            ${[
+                                { key: 'listeners', label: 'Spotify', icon: icons.music, goal: 100000 },
+                                { key: 'instagram', label: 'Instagram', icon: icons.instagram },
+                                { key: 'tiktok', label: 'TikTok', icon: icons.tiktok },
+                                { key: 'youtube', label: 'YouTube', icon: icons.youtube },
+                                { key: 'income', label: 'Monthly $', icon: icons.target, goal: 8300, prefix: '$' },
+                            ].map(stat => `
+                                <div 
+                                    onclick="state.editingStat = '${stat.key}'; state.statInput = '${state.stats[stat.key] || 0}'; render();"
+                                    class="bg-gray-50 rounded-xl p-3 border border-gray-200 cursor-pointer hover:border-gray-300 transition-colors"
+                                >
+                                    <div class="flex items-center gap-2 mb-1">
+                                        ${stat.icon}
+                                        <span class="text-xs text-gray-500">${stat.label}</span>
+                                    </div>
+                                    ${state.editingStat === stat.key ? `
+                                        <div class="flex gap-1">
+                                            <input
+                                                id="statInput"
+                                                type="number"
+                                                value="${state.statInput}"
+                                                oninput="state.statInput = this.value"
+                                                class="w-full px-2 py-1 text-sm border rounded focus:outline-none"
+                                            />
+                                            <button onclick="event.stopPropagation(); updateStat('${stat.key}', state.statInput)" 
+                                                    class="px-2 py-1 bg-gray-800 text-white text-xs rounded">✓</button>
+                                        </div>
+                                    ` : `
+                                        <div>
+                                            <div class="flex items-center justify-between">
+                                                <p class="text-lg font-bold text-black">
+                                                    ${stat.prefix || ''}${(state.stats[stat.key] || 0).toLocaleString()}
+                                                </p>
+                                                ${icons.edit}
+                                            </div>
+                                            ${stat.goal ? `
+                                                <div class="mt-1">
+                                                    <div class="h-1 bg-gray-200 rounded-full overflow-hidden">
+                                                        <div 
+                                                            class="h-full bg-green-500 rounded-full transition-all"
+                                                            style="width: ${Math.min(100, ((state.stats[stat.key] || 0) / stat.goal) * 100)}%"
+                                                        ></div>
+                                                    </div>
+                                                    <p class="text-[10px] text-gray-400 mt-0.5">
+                                                        ${((state.stats[stat.key] || 0) / stat.goal * 100).toFixed(0)}% of ${stat.prefix || ''}${stat.goal.toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+
+                    <!-- Quick Tasks -->
+                    <section>
+                        <div class="bg-white rounded-xl border border-gray-200 p-4">
+                            <div class="flex items-center gap-2 mb-3">
+                                ${icons.zap}
+                                <span class="text-sm font-medium text-black">Quick Tasks</span>
+                                <span class="text-xs text-gray-400">(${state.manualTasks.filter(t => !t.done).length} pending)</span>
+                            </div>
+                            
+                            <div class="flex gap-2 mb-3">
+                                <input
+                                    id="newTaskInput"
+                                    type="text"
+                                    value="${state.newTaskInput}"
+                                    oninput="state.newTaskInput = this.value"
+                                    onkeydown="if (event.key === 'Enter') addManualTask()"
+                                    placeholder="Add a quick task..."
+                                    class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-red-300"
+                                />
+                                <button onclick="addManualTask()"
+                                        class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700">
+                                    Add
+                                </button>
+                            </div>
+                            
+                            ${state.manualTasks.length > 0 ? `
+                                <div class="space-y-2">
+                                    ${state.manualTasks.map(task => `
+                                        <div class="flex items-center gap-3 p-2 rounded-lg ${task.done ? 'bg-gray-50 opacity-60' : 'bg-gray-50'}">
+                                            <button onclick="toggleManualTask('${task.id}')"
+                                                    class="w-5 h-5 rounded border-2 flex items-center justify-center ${task.done ? 'bg-green-500 border-green-500' : 'border-gray-300'}">
+                                                ${task.done ? icons.check : ''}
+                                            </button>
+                                            <span class="flex-1 text-sm ${task.done ? 'line-through text-gray-400' : 'text-black'}">${task.text}</span>
+                                            <button onclick="removeManualTask('${task.id}')" class="p-1 hover:bg-gray-200 rounded">
+                                                ${icons.x}
+                                            </button>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : '<p class="text-xs text-gray-400 text-center py-2">Add quick tasks to track here</p>'}
+                        </div>
+                    </section>
+
+                    <!-- App Launcher -->
+                    <section>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Your Apps</h3>
+                        <div class="grid gap-3">
+                            ${[
+                                { key: 'releases', name: 'Release Engine', desc: 'Music releases & 8-week cycles', icon: icons.music, color: '#dc2626' },
+                                { key: 'content', name: 'Content Hub', desc: 'Calendar, board, analytics', icon: icons.grid, color: '#1f2937' },
+                                { key: 'outreach', name: 'Outreach Tracker', desc: 'Contacts, relationships, follow-ups', icon: icons.users, color: '#374151' },
+                            ].map(app => {
+                                const hasUrl = state.appUrls[app.key];
+                                return `
+                                    <a href="${hasUrl || '#'}" target="${hasUrl ? '_blank' : ''}"
+                                       class="flex items-center gap-4 p-4 rounded-xl border transition-all ${hasUrl ? 'hover:border-gray-300 cursor-pointer' : 'opacity-60'}">
+                                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background-color: ${app.color}">
+                                            ${app.icon}
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-black">${app.name}</h4>
+                                            <p class="text-xs text-gray-500">${app.desc}</p>
+                                        </div>
+                                        ${hasUrl ? icons.externalLink : ''}
+                                    </a>
+                                `;
+                            }).join('')}
+                        </div>
+                    </section>
+                </main>
+
+                <!-- Settings Modal -->
+                ${state.showSettings ? `
+                    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto"
+                         onclick="if (event.target === event.currentTarget) { state.showSettings = false; render(); }">
+                        <div class="bg-white rounded-2xl max-w-lg w-full shadow-xl my-8">
+                            <div class="flex items-center justify-between p-4 border-b sticky top-0 bg-white rounded-t-2xl">
+                                <h2 class="font-bold text-black">Settings</h2>
+                                <button onclick="state.showSettings = false; render();" class="p-1 hover:bg-gray-100 rounded">
+                                    ${icons.x}
+                                </button>
+                            </div>
+                            
+                            <div class="p-4 space-y-6">
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-3 text-black flex items-center gap-2">
+                                        ${icons.upload} Import Data (CSV)
+                                    </h3>
+                                    
+                                    <div class="space-y-3">
+                                        <label class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border">
+                                            <div class="flex items-center gap-3">
+                                                ${icons.music}
+                                                <div>
+                                                    <p class="text-sm font-medium text-black">8-Week Release Cycle</p>
+                                                    <p class="text-xs text-gray-500">${state.cycleData.length ? `${state.cycleData.length} rows` : 'Not loaded'}</p>
+                                                </div>
+                                            </div>
+                                            <input type="file" accept=".csv" onchange="handleFileUpload(event, 'cycle')" class="hidden" />
+                                            <span class="text-xs px-2 py-1 bg-red-100 text-red-600 rounded font-medium">Upload</span>
+                                        </label>
+                                        
+                                        <label class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border">
+                                            <div class="flex items-center gap-3">
+                                                ${icons.calendar}
+                                                <div>
+                                                    <p class="text-sm font-medium text-black">Master Release Calendar</p>
+                                                    <p class="text-xs text-gray-500">${state.releasesData.length ? `${state.releasesData.length} releases` : 'For "Next Drop"'}</p>
+                                                </div>
+                                            </div>
+                                            <input type="file" accept=".csv" onchange="handleFileUpload(event, 'releases')" class="hidden" />
+                                            <span class="text-xs px-2 py-1 bg-blue-100 text-blue-600 rounded font-medium">Upload</span>
+                                        </label>
+                                        
+                                        <label class="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border">
+                                            <div class="flex items-center gap-3">
+                                                ${icons.grid}
+                                                <div>
+                                                    <p class="text-sm font-medium text-black">Content Calendar</p>
+                                                    <p class="text-xs text-gray-500">${state.contentData.length ? `${state.contentData.length} rows` : 'Not loaded'}</p>
+                                                </div>
+                                            </div>
+                                            <input type="file" accept=".csv" onchange="handleFileUpload(event, 'content')" class="hidden" />
+                                            <span class="text-xs px-2 py-1 bg-gray-200 text-gray-600 rounded font-medium">Upload</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-3 text-black">App Links</h3>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="text-xs text-gray-500 mb-1 block">Release Engine URL</label>
+                                            <input type="url" value="${state.appUrls.releases || ''}" 
+                                                   oninput="state.appUrls.releases = this.value"
+                                                   placeholder="https://claude.ai/artifacts/..."
+                                                   class="w-full px-3 py-2 border rounded-lg text-sm" />
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-gray-500 mb-1 block">Content Hub URL</label>
+                                            <input type="url" value="${state.appUrls.content || ''}"
+                                                   oninput="state.appUrls.content = this.value"
+                                                   placeholder="https://claude.ai/artifacts/..."
+                                                   class="w-full px-3 py-2 border rounded-lg text-sm" />
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-gray-500 mb-1 block">Outreach Tracker URL</label>
+                                            <input type="url" value="${state.appUrls.outreach || ''}"
+                                                   oninput="state.appUrls.outreach = this.value"
+                                                   placeholder="https://claude.ai/artifacts/..."
+                                                   class="w-full px-3 py-2 border rounded-lg text-sm" />
+                                        </div>
+                                        <button onclick="save('appUrls', state.appUrls); alert('Links saved!');"
+                                                class="w-full px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2">
+                                            ${icons.save} Save Links
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+
+            // Auto-focus stat input if editing
+            if (state.editingStat) {
+                setTimeout(() => document.getElementById('statInput')?.focus(), 0);
+            }
+        }
+
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registered successfully:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Service Worker registration failed:', error);
-                    });
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
             });
         }
 
-        // Connection status indicator
+        // Connection Status
         function updateConnectionStatus() {
             const statusDiv = document.getElementById('connectionStatus');
             const statusText = document.getElementById('statusText');
@@ -274,10 +854,12 @@
             }
         }
 
-        // Update status on load and when connection changes
         updateConnectionStatus();
         window.addEventListener('online', updateConnectionStatus);
         window.addEventListener('offline', updateConnectionStatus);
+
+        // Initialize
+        loadData();
     </script>
 </body>
 </html>
